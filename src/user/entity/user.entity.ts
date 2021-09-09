@@ -1,6 +1,8 @@
 import {BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,OneToMany} from 'typeorm';
 import {genSaltSync,hashSync} from 'bcrypt';
 import { DailyRegister } from './registro.daily.entity';
+import { DepoimentEntity } from './depoiment.entity';
+
 @Entity({name:'user'})
 export class UserEntity {
     @PrimaryGeneratedColumn('increment')
@@ -13,7 +15,7 @@ export class UserEntity {
     occupation:string;
     @Column({ type: "varchar", length: 80, unique: true })
     email:string;
-    @Column()
+    @Column({ select: false })
     password:string;
     @Column()
     years_that_smoke:number;
@@ -36,6 +38,9 @@ export class UserEntity {
     
     @OneToMany(type => DailyRegister, register => register.user)
     registers: DailyRegister[];
+
+    @OneToMany(type => DepoimentEntity, depoiment => depoiment.user)
+    depoiments: DepoimentEntity[];
     
 
     // Arrumar 

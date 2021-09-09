@@ -21,7 +21,7 @@ export class UserEntity {
     years_that_smoke:number;
     @Column()
     daily_cigarettes:number; 
-    @Column()
+    @Column({type:"decimal"})
     cigarette_pack_price :number;
     @Column({nullable: true})
     initial_dependency_level :number;

@@ -2,6 +2,9 @@ import {BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,O
 import {genSaltSync,hashSync} from 'bcrypt';
 import { DailyRegister } from './registro.daily.entity';
 import { DepoimentEntity } from './depoiment.entity';
+import { userTrophyEntity } from 'src/quest/entity/user.trophy.entity';
+import { dailyQuestUser } from 'src/quest/entity/user.daily.quest.entity';
+
 
 @Entity({name:'user'})
 export class UserEntity {
@@ -42,7 +45,12 @@ export class UserEntity {
     @OneToMany(type => DepoimentEntity, depoiment => depoiment.user)
     depoiments: DepoimentEntity[];
     
+    @OneToMany(type =>userTrophyEntity, userTrophy =>userTrophy.user)
+    userTrophys:userTrophyEntity[];
 
+    @OneToMany(type=>dailyQuestUser,dailyQuest =>dailyQuest.user)
+    dailysQuests:dailyQuestUser[];
+    
     // Arrumar 
     /* @BeforeInsert()
     hashPassword(){

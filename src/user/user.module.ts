@@ -10,6 +10,6 @@ import { DepoimentEntity } from './entity/depoiment.entity';
   imports: [ TypeOrmModule.forFeature([UserEntity,DailyRegister,DepoimentEntity])],
   controllers: [UserController],
   providers: [UserService],
-  exports:[UserService]
+  /* exports:[UserService,UserEntity] */
 })
 export class UserModule {}

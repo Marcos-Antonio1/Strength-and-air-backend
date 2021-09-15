@@ -81,4 +81,10 @@ export class UserController {
     async deleteDepoiment(@Param('id') id: string){
         return await this.userService.deleteDepoiment(id);
     }
+
+    @Get('/trophys/:id')
+    @ApiOperation({ summary: "Regesta todos os troféus do usuário"})
+    async Mytrophy(@Param('id') id: string){
+        return await this.userService.getTrophys(id);
+    }
 }

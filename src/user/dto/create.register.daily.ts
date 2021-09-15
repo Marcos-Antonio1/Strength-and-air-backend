@@ -12,7 +12,6 @@ export class createRegisterDaily{
     @ApiProperty()
     amount_cigarettes_today:number;
     
-    days_without_smoking:number;
      
     daily_lost_money:number;
     

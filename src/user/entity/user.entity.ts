@@ -1,9 +1,10 @@
-import {BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,OneToMany} from 'typeorm';
+import {BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,OneToMany, JoinTable, ManyToMany} from 'typeorm';
 import {genSaltSync,hashSync} from 'bcrypt';
 import { DailyRegister } from './registro.daily.entity';
 import { DepoimentEntity } from './depoiment.entity';
-import { userTrophyEntity } from 'src/quest/entity/user.trophy.entity';
+//import { userTrophyEntity } from 'src/quest/entity/user.trophy.entity';
 import { dailyQuestUser } from 'src/quest/entity/user.daily.quest.entity';
+import { trophyEntity } from 'src/quest/entity/trophy.entity';
 
 
 @Entity({name:'user'})
@@ -38,16 +39,23 @@ export class UserEntity {
     lost_initial_time:number; 
     @CreateDateColumn()
     registedAt:Date;
+    @Column({nullable: true})
+    pontuacao:number;
+    @Column({nullable:true})
+    days_without_smoking:number;
     
     @OneToMany(type => DailyRegister, register => register.user)
+    @JoinTable()
     registers: DailyRegister[];
 
     @OneToMany(type => DepoimentEntity, depoiment => depoiment.user)
     depoiments: DepoimentEntity[];
     
-    @OneToMany(type =>userTrophyEntity, userTrophy =>userTrophy.user)
-    userTrophys:userTrophyEntity[];
 
+    @ManyToMany(()=>trophyEntity)
+    @JoinTable()
+    trophy:trophyEntity[]
+    
     @OneToMany(type=>dailyQuestUser,dailyQuest =>dailyQuest.user)
     dailysQuests:dailyQuestUser[];
     

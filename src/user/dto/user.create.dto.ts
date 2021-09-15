@@ -4,7 +4,6 @@ import {
     IsInt,
     IsEmail,
     IsNumber,
-
 } from 'class-validator';
 export class UserCreateDto{
 
@@ -47,6 +46,7 @@ export class UserCreateDto{
 
     amount_smoked_cigarettes:number;
     lost_initial_money:number;
-    lost_initial_time:number; 
+    lost_initial_time:number;
+    days_without_smoking:number;
 
 }

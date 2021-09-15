@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { createRegisterDaily } from './dto/create.register.daily';
@@ -12,6 +12,9 @@ import { DepoimentUpdateDto } from './dto/depoiment.update.dto';
 import { DailyRegister } from './entity/registro.daily.entity';
 import { DepoimentEntity } from './entity/depoiment.entity';
 import { UserEntity } from './entity/user.entity';
+import { dailyQuestEntity } from 'src/quest/entity/daily.quest.entity'; 
+import { dailyQuestUser } from 'src/quest/entity/user.daily.quest.entity';
+import { trophyEntity } from 'src/quest/entity/trophy.entity';
 
 @Injectable()
 export class UserService {
@@ -21,7 +24,13 @@ export class UserService {
         @InjectRepository(DailyRegister)
         private readonly dailyRegister:Repository<DailyRegister>,
         @InjectRepository(DepoimentEntity)
-        private readonly depoiment:Repository<DepoimentEntity>
+        private readonly depoiment:Repository<DepoimentEntity>,
+        @InjectRepository(dailyQuestEntity)
+        private readonly quests:Repository<dailyQuestEntity>,
+        @InjectRepository(dailyQuestUser)
+        private readonly questUser:Repository<dailyQuestUser>,
+        @InjectRepository(trophyEntity)
+        private readonly trophy:Repository<trophyEntity>,
     ){}
 
     async register(data:UserCreateDto){
@@ -95,6 +104,13 @@ export class UserService {
     async registerDaily(id:string,data:createRegisterDaily){
 
         let user_found = await this.findOne(id);
+        
+        if(data.amount_cigarettes_today === 0){
+            await this.registerDayWithSmoke(user_found)
+        }else if(user_found.days_without_smoking >0){
+            await this.restartDaysWithSmoke(user_found);
+        }
+
         let price_one_cigarette =(user_found.cigarette_pack_price/20);
         // mutiplica  a quantidade de cigarros pelo seu valor unitário
         data.daily_lost_money=data.amount_cigarettes_today*price_one_cigarette;
@@ -113,11 +129,86 @@ export class UserService {
         
         let register =this.dailyRegister.create(data);
         register.user=user_found;
+        // implementar depois essa validação de data
+        //let dataAlreadyREgister = await this.checkDataRegister(id);
 
-        return this.dailyRegister.save(register);
+        let dailyQuests= await this.checkDailyQuests(user_found, data)
+        await this.checkTroph(user_found)
+
+        register = await this.dailyRegister.save(register);
         
+        delete register.user;
+
+        return {register,dailyQuests,}
+
+
     }
 
+    async registerDayWithSmoke(user){
+        user.days_without_smoking +=1;
+        this.user.save(user)
+    }
+    async restartDaysWithSmoke(user){
+        user.days_without_smoking =0;
+        this.user.save(user)
+    }
+    async checkDailyQuests(user,data) {
+        const diferenceExpectDailyCigarrets=user.daily_cigarettes-data.amount_cigarettes_today;
+        if(diferenceExpectDailyCigarrets < 0) return;
+
+        let questsCompleted= await this.quests.
+        createQueryBuilder("daily_quest_entity").
+        select().where("cigarette_quest =:num",
+        {num:diferenceExpectDailyCigarrets}).getOne()
+        
+        if(questsCompleted) {
+            await this.addPoints(user,questsCompleted)
+            return questsCompleted; 
+        } 
+    }
+    async addPoints(user, questsCompleted){  
+        user.pontuacao +=questsCompleted.scoreQuest;
+        await this.user.save(user);
+        await this.UnlockerQuestDaily(user,questsCompleted);
+        return;
+    }
+     // validação de data
+    /* async checkDataRegister(id){ 
+        let dataAtual = new Date().toISOString()
+        dataAtual = dataAtual.slice(0,10)
+        return await this.user.createQueryBuilder("user").
+        innerJoinAndSelect("user.registers","registers")
+        .where("user.id = :id",{id:id}).andWhere("registers.data like :data",{data:`${dataAtual}%`}).getMany();
+
+    } */
+
+    async UnlockerQuestDaily(user,quest){
+        let quetsUser = {
+            desbloqueada:true,
+        }
+        await this.questUser.createQueryBuilder().insert().
+        into(dailyQuestUser).values({desbloqueada:true,dailyQuest:quest,user:user}).
+        execute();
+    }
+    async checkTroph(user){
+        let trophys = await this.trophy.createQueryBuilder('trophy').
+        select().where('pontuacao<= :num',{num:user.pontuacao}).
+        orWhere('days_without_smoking = :days',{days:user.days_without_smoking}).
+        getMany();
+        
+        if(trophys){
+            this.registerTrophyUser(user, trophys)
+        }
+    }
+    async registerTrophyUser(user,trophy){
+        user.trophy =trophy;
+
+        try{
+            await this.user.save(user);
+        }catch(error){
+            console.log(error)
+        }
+    } 
     async getDepoiments() {
         try {
             let depoiments_found = await this.depoiment.find();
@@ -155,7 +246,6 @@ export class UserService {
 
             return this.depoiment.save(newDepoiment);
 
-
         } catch (error) {
             throw new NotFoundException(error.message);
         }
@@ -185,5 +275,11 @@ export class UserService {
         } catch (error) {
             throw new NotFoundException(error.message);
         }
+    }
+
+    async getTrophys(id:string){
+        let user_found = await this.findOne(id);
+        return await this.user.createQueryBuilder().
+        relation(UserEntity,"trophy").of(id).loadMany();
     }
 }

@@ -1,4 +1,4 @@
-import { Delete, Param, Put } from '@nestjs/common';
+import { Delete, Get, Param, Put } from '@nestjs/common';
 import { Body } from '@nestjs/common';
 import { Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -27,5 +27,12 @@ export class QuestController {
     @ApiResponse({status:200,description:"Quest deletada com sucesso"})
     async deleteQuest(@Param('id')id:string){
         return await this.questsService.deleteQuest(id)
+    }
+    
+    @Get('/allQuests')
+    @ApiOperation({summary:"retornar todas as quests"})
+    @ApiResponse({status:200,description:"quest Recuperada com sucesso"})
+    async getAllQuests(){
+        return this.questsService.getAll()
     }
 }

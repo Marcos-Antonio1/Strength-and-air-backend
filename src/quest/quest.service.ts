@@ -91,5 +91,9 @@ export class QuestService {
         }catch(error){
             console.log(error)
         }
-    } 
+    }
+
+    async getAll(){
+        return this.questDaily.find();
+    }
 }

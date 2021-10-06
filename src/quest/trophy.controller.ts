@@ -1,4 +1,4 @@
-import { Delete, Param, Put } from "@nestjs/common";
+import { Delete, Get, Param, Put } from "@nestjs/common";
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TrophyCreateDto } from "./dto/trophy.create.dto";
@@ -29,6 +29,13 @@ export class trophyController{
     @ApiResponse({status:200,description:"trophy deletada com sucesso"})
     async deleteQuest(@Param('id')id:string){
         return await this.trophy.deleteTrophy(id);
+    }
+
+    @Get('/alltrophys')
+    @ApiOperation({summary:"delete uma trophy"})
+    @ApiResponse({status:200,description:"trophy deletada com sucesso"})
+    async getAllTrophys(){
+        return this.trophy.getAllTrophys()
     }
 }
     

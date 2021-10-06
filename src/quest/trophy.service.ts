@@ -29,5 +29,8 @@ export class TrophySeervice {
     async deleteTrophy(id){
         const trophy_found = await this.findOne(id);
         return this.trophy.delete(trophy_found);
+    }
+    async getAllTrophys(){
+        return this.trophy.find()
     }  
 }

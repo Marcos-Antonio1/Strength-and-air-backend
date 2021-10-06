@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { TrophyCreateDto } from "./dto/trophy.create.dto";
 import { TrophyUpdateDto } from "./dto/trophy.update.dto";
 import { TrophySeervice } from "./trophy.service";
+
 @Controller('trophy')
 @ApiTags('trophy')
 export class trophyController{

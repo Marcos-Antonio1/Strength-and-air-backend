@@ -1,5 +1,6 @@
 import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,ManyToOne} from 'typeorm';
 import { UserEntity } from './user.entity';
+
 @Entity({name:'dailyRegister'})
 export class DailyRegister {
     @PrimaryGeneratedColumn()

@@ -4,6 +4,7 @@ import {
     IsInt,
     IsEmail,
     IsNumber,
+    Matches,
 } from 'class-validator';
 export class UserCreateDto{
 
@@ -27,6 +28,7 @@ export class UserCreateDto{
     
     @IsNotEmpty()
     @ApiProperty()
+    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,{message:"A senha deve conter letras maiúsculas e minúsculas pelo menos um caractere especial e números"})
     password:string;
     
     @IsNotEmpty()

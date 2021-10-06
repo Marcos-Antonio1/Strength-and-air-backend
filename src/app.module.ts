@@ -3,6 +3,9 @@ import {ConfigModule , ConfigService} from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import {QuestModule} from './quest/quest.module';
+import { DepoimentModule } from './depoiment/depoiment.module';
+import { AuthModule } from './auth/auth.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -20,7 +23,9 @@ import {QuestModule} from './quest/quest.module';
       }),
     }),
     UserModule,
-    QuestModule
+    QuestModule,
+    DepoimentModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],

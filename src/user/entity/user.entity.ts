@@ -1,8 +1,7 @@
 import {BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,OneToMany, JoinTable, ManyToMany} from 'typeorm';
-import {genSaltSync,hashSync} from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 import { DailyRegister } from './registro.daily.entity';
-import { DepoimentEntity } from './depoiment.entity';
-//import { userTrophyEntity } from 'src/quest/entity/user.trophy.entity';
+import { DepoimentEntity } from '../../depoiment/entity/depoiment.entity';
 import { dailyQuestUser } from 'src/quest/entity/user.daily.quest.entity';
 import { trophyEntity } from 'src/quest/entity/trophy.entity';
 
@@ -19,7 +18,7 @@ export class UserEntity {
     occupation:string;
     @Column({ type: "varchar", length: 80, unique: true })
     email:string;
-    @Column({ select: false })
+    @Column()
     password:string;
     @Column()
     years_that_smoke:number;
@@ -59,11 +58,4 @@ export class UserEntity {
     @OneToMany(type=>dailyQuestUser,dailyQuest =>dailyQuest.user)
     dailysQuests:dailyQuestUser[];
     
-    // Arrumar 
-    /* @BeforeInsert()
-    hashPassword(){
-        // guardar em variável de ambiente depois
-        const salt=genSaltSync(25)
-        this.password=  hashSync(this.password,salt);
-    } */
 }

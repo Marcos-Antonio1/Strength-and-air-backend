@@ -1,5 +1,4 @@
-import {Column, Entity, PrimaryGeneratedColumn,OneToMany} from "typeorm";
-//import { userTrophyEntity } from "./user.trophy.entity";
+import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 
 type Tipo = 'days' | 'scores'
 

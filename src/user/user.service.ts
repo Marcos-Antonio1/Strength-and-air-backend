@@ -1,20 +1,18 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+
+import { ConflictException, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
+import { QuestService } from 'src/quest/quest.service';
 import { Repository } from 'typeorm';
 import { createRegisterDaily } from './dto/create.register.daily';
 import { testCreate } from './dto/test.create';
 import { UserCreateDto } from './dto/user.create.dto';
 import { userUpdateDto } from './dto/user.update.dto';
-
-import { DepoimentCreateDto } from './dto/depoiment.create.dto';
-import { DepoimentUpdateDto } from './dto/depoiment.update.dto';
+import * as bcrypt from 'bcrypt';
 
 import { DailyRegister } from './entity/registro.daily.entity';
-import { DepoimentEntity } from './entity/depoiment.entity';
 import { UserEntity } from './entity/user.entity';
-import { dailyQuestEntity } from 'src/quest/entity/daily.quest.entity'; 
-import { dailyQuestUser } from 'src/quest/entity/user.daily.quest.entity';
-import { trophyEntity } from 'src/quest/entity/trophy.entity';
+
 
 @Injectable()
 export class UserService {
@@ -23,25 +21,27 @@ export class UserService {
         private readonly user:Repository<UserEntity>,
         @InjectRepository(DailyRegister)
         private readonly dailyRegister:Repository<DailyRegister>,
-        @InjectRepository(DepoimentEntity)
-        private readonly depoiment:Repository<DepoimentEntity>,
-        @InjectRepository(dailyQuestEntity)
-        private readonly quests:Repository<dailyQuestEntity>,
-        @InjectRepository(dailyQuestUser)
-        private readonly questUser:Repository<dailyQuestUser>,
-        @InjectRepository(trophyEntity)
-        private readonly trophy:Repository<trophyEntity>,
+        @Inject(forwardRef(()=>QuestService))
+        private readonly quest: QuestService
     ){}
-
     async register(data:UserCreateDto){
         
         let {daily_cigarettes, cigarette_pack_price,years_that_smoke} =data;
         data.lost_initial_money=this.calcValueSpent(daily_cigarettes, cigarette_pack_price,years_that_smoke);
         data.amount_smoked_cigarettes= this.calcAmountSmoked(years_that_smoke,daily_cigarettes)
         data.lost_initial_time = this.calcInitialTimeLost(daily_cigarettes,years_that_smoke);
-        return await this.user.save(data);
+        const salt = await bcrypt.genSalt();
+        data.password = await bcrypt.hash(data.password,salt)
+        try{
+            return await this.user.save(data);
+        }catch(error){
+            if(error.code == 23505){
+                throw new ConflictException('Esse usuário já está cadastrado')
+            }else{
+                throw error;
+            }
+        }
     }
-
     calcValueSpent(daily_cigarettes, cigarette_pack_price,years_that_smoke):number {
         
         let days_smoke =this.calcDaysSmoke(years_that_smoke);
@@ -50,32 +50,34 @@ export class UserService {
 
         return days_smoke*cost_one_day;
     }
-
     calcAmountSmoked(years_that_smoke,daily_cigarettes):number{
         
         let days_smoke =this.calcDaysSmoke(years_that_smoke);
         return days_smoke *daily_cigarettes;
     }
-
     calcDaysSmoke(years_that_smoke):number{
         
         return years_that_smoke*365;
     }
-
     calcInitialTimeLost(daily_cigarettes,years_that_smoke):number{
 
         let days_smoke =this.calcDaysSmoke(years_that_smoke);
         return days_smoke * daily_cigarettes;
 
     }
-
     async findOne(id:string){
-        
         try{
             return await this.user.findOneOrFail(id)
         }catch(error){
             throw new NotFoundException(error.message);
         }
+    }
+
+    async findByEmail(email:string){
+        console.log(`estou aqui ${email}`)
+        const user = await this.user.findOne({email}) 
+        console.log(user)
+        return user;
     }
 
     async update(id:string,data:userUpdateDto){
@@ -132,8 +134,8 @@ export class UserService {
         // implementar depois essa validação de data
         //let dataAlreadyREgister = await this.checkDataRegister(id);
 
-        let dailyQuests= await this.checkDailyQuests(user_found, data)
-        await this.checkTroph(user_found)
+        let dailyQuests= await this.quest.checkDailyQuests(user_found, data)
+        await this.quest.checkTroph(user_found)
 
         register = await this.dailyRegister.save(register);
         
@@ -141,9 +143,7 @@ export class UserService {
 
         return {register,dailyQuests,}
 
-
     }
-
     async registerDayWithSmoke(user){
         user.days_without_smoking +=1;
         this.user.save(user)
@@ -152,134 +152,14 @@ export class UserService {
         user.days_without_smoking =0;
         this.user.save(user)
     }
-    async checkDailyQuests(user,data) {
-        const diferenceExpectDailyCigarrets=user.daily_cigarettes-data.amount_cigarettes_today;
-        if(diferenceExpectDailyCigarrets < 0) return;
-
-        let questsCompleted= await this.quests.
-        createQueryBuilder("daily_quest_entity").
-        select().where("cigarette_quest =:num",
-        {num:diferenceExpectDailyCigarrets}).getOne()
-        
-        if(questsCompleted) {
-            await this.addPoints(user,questsCompleted)
-            return questsCompleted; 
-        } 
-    }
-    async addPoints(user, questsCompleted){  
-        user.pontuacao +=questsCompleted.scoreQuest;
-        await this.user.save(user);
-        await this.UnlockerQuestDaily(user,questsCompleted);
-        return;
-    }
-     // validação de data
-    /* async checkDataRegister(id){ 
-        let dataAtual = new Date().toISOString()
-        dataAtual = dataAtual.slice(0,10)
-        return await this.user.createQueryBuilder("user").
-        innerJoinAndSelect("user.registers","registers")
-        .where("user.id = :id",{id:id}).andWhere("registers.data like :data",{data:`${dataAtual}%`}).getMany();
-
-    } */
-
-    async UnlockerQuestDaily(user,quest){
-        let quetsUser = {
-            desbloqueada:true,
-        }
-        await this.questUser.createQueryBuilder().insert().
-        into(dailyQuestUser).values({desbloqueada:true,dailyQuest:quest,user:user}).
-        execute();
-    }
-    async checkTroph(user){
-        let trophys = await this.trophy.createQueryBuilder('trophy').
-        select().where('pontuacao<= :num',{num:user.pontuacao}).
-        orWhere('days_without_smoking = :days',{days:user.days_without_smoking}).
-        getMany();
-        
-        if(trophys){
-            this.registerTrophyUser(user, trophys)
-        }
-    }
-    async registerTrophyUser(user,trophy){
-        user.trophy =trophy;
-
-        try{
-            await this.user.save(user);
-        }catch(error){
-            console.log(error)
-        }
-    } 
-    async getDepoiments() {
-        try {
-            let depoiments_found = await this.depoiment.find();
-            return depoiments_found;
-        } catch (error) {
-            throw new NotFoundException(error.message);
-        }
-    }
-
-    // esse talvez não precise, mas... kk
-    async getDepoimentByID(id: string) {
-            let depoiment_found = await this.depoiment.findOne(id);
-            return depoiment_found;
-    }
-
-    async getDepoimentsByUser(id: string) {
-        try {
-            let depoiments_found = await this.depoiment.find({ 
-                where: { 
-                    user: { id: id } 
-                },
-            })
-            return depoiments_found;
-        } catch (error) {
-            throw new NotFoundException(error.message); 
-        }
-    }
-
-    async createDepoiment(id: string, data: DepoimentCreateDto) {
-
-        try {
-            let user_found = await this.findOne(id);
-            let newDepoiment = this.depoiment.create(data);
-            newDepoiment.user = user_found;
-
-            return this.depoiment.save(newDepoiment);
-
-        } catch (error) {
-            throw new NotFoundException(error.message);
-        }
-    }
-
-    async updateDepoiment(id: string, data: DepoimentUpdateDto) {
-        
-        try {
-            let depoiment_found = await this.depoiment.findOne(id);
-            let { title, text } = data;
-            depoiment_found.title = title;
-            depoiment_found.text = text;
-
-            return this.depoiment.save(depoiment_found);
-
-        } catch (error) {
-            throw new NotFoundException(error.message);
-        }
-    }
-
-    async deleteDepoiment(id: string) {
-        try {
-            let depoiment_found = await this.depoiment.findOne(id);
-
-            return this.depoiment.remove(depoiment_found);
-
-        } catch (error) {
-            throw new NotFoundException(error.message);
-        }
-    }
-
+    
     async getTrophys(id:string){
         let user_found = await this.findOne(id);
         return await this.user.createQueryBuilder().
         relation(UserEntity,"trophy").of(id).loadMany();
+    }
+
+    async save(user){
+      return await this.user.save(user);
     }
 }

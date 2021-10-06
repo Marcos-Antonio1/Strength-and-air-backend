@@ -9,7 +9,7 @@ import { trophyEntity } from './entity/trophy.entity';
 export class TrophySeervice {
     constructor(
         @InjectRepository(trophyEntity)
-        private readonly trophy:Repository<trophyEntity>
+        private readonly trophy:Repository<trophyEntity> 
     ){}
     async resgisterTrophy(data:TrophyCreateDto){
         return await this.trophy.save(data);

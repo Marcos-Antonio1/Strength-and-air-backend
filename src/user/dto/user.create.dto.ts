@@ -46,6 +46,16 @@ export class UserCreateDto{
     @ApiProperty()
     cigarette_pack_price:number;
 
+    @IsNotEmpty()
+    @IsInt()
+    @ApiProperty()
+    initial_dependency_level:number;
+    
+    @IsNotEmpty()
+    @IsInt()
+    @ApiProperty()
+    current_dependency_level:number;
+
     amount_smoked_cigarettes:number;
     lost_initial_money:number;
     lost_initial_time:number;

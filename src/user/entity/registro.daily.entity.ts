@@ -9,7 +9,7 @@ export class DailyRegister {
     amount_cigarettes_today:number;
     @Column({nullable:true})
     days_without_smoking:number;
-    @CreateDateColumn()
+    @Column()
     data:Date;
     @Column({type:'decimal'})
     daily_lost_money:number;

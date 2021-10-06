@@ -46,7 +46,7 @@ export class UserController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard) 
     @Post('/dailyRegister:id')
     @ApiOperation({summary:"Cadastra o registro diário"})
     async dailyRegister(@Param('id')id:string,@Body() body:createRegisterDaily){

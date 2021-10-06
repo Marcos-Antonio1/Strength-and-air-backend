@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 
 import { DailyRegister } from './entity/registro.daily.entity';
 import { UserEntity } from './entity/user.entity';
+import { NotAcceptableException } from '@nestjs/common';
 
 
 @Injectable()
@@ -128,11 +129,18 @@ export class UserService {
         // o tempo de vida esperado - o tempo de vida gasto = tempo de vida salvo
         let time_life_saved=expect_spend_time- data.lost_life_time;
         time_life_saved >0 ? data.lifetime_saved_daily=time_life_saved: data.lifetime_saved_daily=0;
-        
+
         let register =this.dailyRegister.create(data);
+        
+        register.data = this.formartDate()
+        
+        if(this.checkRegisterDay(id)) { 
+            throw new NotAcceptableException({message:"o registro diário já foi cadastrado hoje"})
+            return;
+        } 
+
         register.user=user_found;
-        // implementar depois essa validação de data
-        //let dataAlreadyREgister = await this.checkDataRegister(id);
+
 
         let dailyQuests= await this.quest.checkDailyQuests(user_found, data)
         await this.quest.checkTroph(user_found)
@@ -141,7 +149,7 @@ export class UserService {
         
         delete register.user;
 
-        return {register,dailyQuests,}
+        return {register,dailyQuests}
 
     }
     async registerDayWithSmoke(user){
@@ -157,6 +165,23 @@ export class UserService {
         let user_found = await this.findOne(id);
         return await this.user.createQueryBuilder().
         relation(UserEntity,"trophy").of(id).loadMany();
+    }
+
+    formartDate(){
+        let date = new Date();
+        return new Date(date.getFullYear(),date.getMonth(),date.getDay())
+    }
+
+    checkRegisterDay(id:string){
+        const dataAtual = this.formartDate()
+        try{
+            this.dailyRegister.createQueryBuilder('dailyRegister').
+            where("userId = :id",{id}).andWhere("data = :dataAtual",{dataAtual}).
+            getOneOrFail();
+        }catch(error){
+            return false;
+        }
+        return true;
     }
 
     async save(user){

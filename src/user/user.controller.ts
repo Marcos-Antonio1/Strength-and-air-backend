@@ -67,18 +67,27 @@ export class UserController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard) 
+    /* @UseGuards(JwtAuthGuard) */ 
     @Post('/dailyRegister:id')
     @ApiOperation({summary:"Cadastra o registro diário"})
     async dailyRegister(@Param('id')id:string,@Body() body:createRegisterDaily){
+        console.log("cheguei aqui")
         return await this.userService.registerDaily(id,body);
     }
 
     @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
+    /* @UseGuards(JwtAuthGuard) */
     @Get('/trophys/:id')
-    @ApiOperation({ summary: "Regesta todos os troféus do usuário"})
+    @ApiOperation({ summary: "Resgasta todos os troféus do usuário"})
     async Mytrophy(@Param('id') id: string){
         return await this.userService.getTrophys(id);
+    }
+
+    @ApiBearerAuth()
+    /* @UseGuards(JwtAuthGuard) */
+    @Get('/evolutionData/:id')  
+    @ApiOperation({ summary: "Regasta os dados atual da evolução do usuario"})
+    async getEvolutionData(@Param('id') id: string){
+        return await this.userService.evolutionData(id)
     }
 }

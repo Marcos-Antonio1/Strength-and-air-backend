@@ -147,10 +147,10 @@ export class UserService {
         
         register.data = this.formartDate()
         
-        if(this.checkRegisterDay(id)) { 
+        /* if(this.checkRegisterDay(id)) { 
             throw new NotAcceptableException({message:"o registro diário já foi cadastrado hoje"})
             return;
-        } 
+        }  */
 
         register.user=user_found;
 
@@ -195,6 +195,22 @@ export class UserService {
             return false;
         }
         return true;
+    }
+    
+    async evolutionData(id){
+        const time = await this.dailyRegister.createQueryBuilder('dailyRegister')
+        .select("SUM(dailyRegister.lifetime_saved_daily)","lifesave")
+        .where("dailyRegister.userId = :id",{id}).getRawMany()
+        
+         const money= await this.dailyRegister.createQueryBuilder('dailyRegister')
+        .select("SUM(dailyRegister.money_saved_daily)","money_saved")
+        .where("dailyRegister.userId = :id",{id}).getRawMany()
+
+        const cigarrete = await this.dailyRegister.createQueryBuilder('dailyRegister')
+        .select("SUM(dailyRegister.amount_cigarettes_today)","cigarrete")
+        .where("dailyRegister.userId = :id",{id}).getRawMany() 
+
+        return {lifesave:time[0],moneysave:money[0],cigarrete:cigarrete[0]}
     }
 
     async save(user){

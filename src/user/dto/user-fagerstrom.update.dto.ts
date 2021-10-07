@@ -9,5 +9,5 @@ export class UserFagerstromUpdateDto{
   @IsNotEmpty()
   @IsInt()
   @ApiProperty()
-  initial_dependency_level:number;
+  current_dependency_level:number;
 }

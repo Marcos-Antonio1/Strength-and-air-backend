@@ -14,5 +14,5 @@ export class UserCigaretteInfoUpdateDto {
     @IsNotEmpty()   
     @IsNumber()
     @ApiProperty()
-    cigarette_price:number;
+    cigarette_pack_price:number;
 }

@@ -7,7 +7,9 @@ import { Repository } from 'typeorm';
 import { createRegisterDaily } from './dto/create.register.daily';
 import { testCreate } from './dto/test.create';
 import { UserCreateDto } from './dto/user.create.dto';
-import { userUpdateDto } from './dto/user.update.dto';
+import { UserPersonalUpdateDto } from './dto/user-personal.update.dto';
+import { UserCigaretteInfoUpdateDto } from './dto/user-cigarette-info.update.dto';
+import { UserFagerstromUpdateDto } from './dto/user-fagerstrom.update.dto';
 import * as bcrypt from 'bcrypt';
 
 import { DailyRegister } from './entity/registro.daily.entity';
@@ -81,13 +83,24 @@ export class UserService {
         return user;
     }
 
-    async update(id:string,data:userUpdateDto){
-        
+    async updatePersonalData(id:string,data:UserPersonalUpdateDto){
         const user_found = await this.findOne(id);
         this.user.merge(user_found,data);
         return await this.user.save(user_found);
-    
     }
+
+    async updateCigaretteInfo(id:string,data:UserCigaretteInfoUpdateDto){
+        const user_found = await this.findOne(id);
+        this.user.merge(user_found,data);
+        return await this.user.save(user_found);
+    }
+
+    async updateFagerstromTest(id:string,data:UserFagerstromUpdateDto){
+        const user_found = await this.findOne(id);
+        this.user.merge(user_found,data);
+        return await this.user.save(user_found);
+    }
+
     async testInitialDependecysLevel(id:string,data:testCreate){
 
         let user_found = await this.findOne(id);

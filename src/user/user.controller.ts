@@ -1,19 +1,25 @@
-import { 
-    Post,Put,Body, Controller, Get,Param, UseGuards 
-} from '@nestjs/common';
+import { Post,Put,Body, Controller, Get,Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { createRegisterDaily } from './dto/create.register.daily';
 import { testCreate } from './dto/test.create';
 import { UserCreateDto } from './dto/user.create.dto';
-import { userUpdateDto } from './dto/user.update.dto';
+import { UserPersonalUpdateDto } from './dto/user-personal.update.dto';
+import { UserCigaretteInfoUpdateDto } from './dto/user-cigarette-info.update.dto';
+import { UserFagerstromUpdateDto } from './dto/user-fagerstrom.update.dto';
 import { UserService } from './user.service';
-
 
 @Controller('user')
 @ApiTags('user')
 export class UserController {
     constructor(private readonly userService: UserService){}
+
+    @Get('/:id')
+    @ApiOperation({ summary: 'Recupera um usuário pelo ID' })
+    @ApiResponse({ status: 200, description: 'Recuperado com sucesso.' })
+    async getUser(@Param('id') id: string) {
+        return await this.userService.findOne(id);
+    }
 
     @Post('/register')
     @ApiOperation({summary:"Criar um novo usuário"})
@@ -23,14 +29,29 @@ export class UserController {
     }
 
     @ApiBearerAuth()
-    @UseGuards(JwtAuthGuard)
-    @Put('/update:id')
-    @ApiOperation({summary:"Atualizar dados do usuário"})
-    async update(@Param('id')id:string,@Body() body:userUpdateDto){
-        return await this.userService.update(id,body);
+    // @UseGuards(JwtAuthGuard)
+    @Put('/update-personal/:id')
+    @ApiOperation({summary:"Atualizar dados pessoais do usuário"})
+    async updatePersonalData(@Param('id') id: string,@Body() body:UserPersonalUpdateDto){
+        return await this.userService.updatePersonalData(id,body);
     }
 
-    
+    @ApiBearerAuth()
+    // @UseGuards(JwtAuthGuard)
+    @Put('/update-cigarette-info/:id')
+    @ApiOperation({summary:"Atualizar dados sobre cigarros do usuário"})
+    async updateCigaretteInfo(@Param('id') id: string,@Body() body:UserCigaretteInfoUpdateDto){
+        return await this.userService.updateCigaretteInfo(id,body);
+    }
+
+    @ApiBearerAuth()
+    // @UseGuards(JwtAuthGuard)
+    @Put('/update-fagerstrom-test/:id')
+    @ApiOperation({summary:"Atualizar teste de fagerström do usuário"})
+    async updateFagerstromTest(@Param('id') id: string,@Body() body:UserFagerstromUpdateDto){
+        return await this.userService.updateFagerstromTest(id,body);
+    }
+
     @Post('/testInitial:id')
     @ApiOperation({summary:"Insere o valor do teste de depedência inical"})
     async testInitial(@Param('id')id:string,@Body() body:testCreate){

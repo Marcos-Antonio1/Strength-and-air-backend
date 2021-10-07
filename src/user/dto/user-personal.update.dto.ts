@@ -5,9 +5,8 @@ import {
     IsInt,
     IsNumber
 } from "class-validator";
-export class userUpdateDto {
+export class UserPersonalUpdateDto {
     @IsNotEmpty()
-    @IsEmail()
     @ApiProperty()
     email:string;
 
@@ -22,11 +21,11 @@ export class userUpdateDto {
     @IsNotEmpty()
     @IsInt()
     @ApiProperty()
-    daily_cigarettes:number;
+    years_that_smoke:number;
     
     @IsNotEmpty()   
-    @IsNumber()
+    @IsInt()
     @ApiProperty()
-    cigarette_price:number;
+    age:number;
 
 }

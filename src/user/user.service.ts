@@ -227,4 +227,160 @@ export class UserService {
     async save(user){
       return await this.user.save(user);
     }
+
+    async getDataStatics(id){
+        const mounts = ["Agosto","Setembro","Outubro"]
+
+        const LifetimeSaveAgosto = await this.user.query(`
+        SELECT SUM(lifetime_saved_daily) as lifetime
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-08-01' AND 
+        '2021-08-31'
+        `,[id])
+
+        if(LifetimeSaveAgosto[0].lifetime == null){ 
+            LifetimeSaveAgosto[0].lifetime =0
+        }else{
+            if(LifetimeSaveAgosto[0].lifetime < 1444) LifetimeSaveAgosto[0].lifetime= 1;
+            LifetimeSaveAgosto[0].lifetime = (LifetimeSaveAgosto[0].lifetime/1440)
+        }
+
+        const LifetimeSaveSetembro =  await this.user.query(`
+        SELECT SUM(lifetime_saved_daily) as lifetime
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-09-01' AND 
+        '2021-09-30'
+        `,[id])
+
+        if(LifetimeSaveSetembro[0].lifetime == null){ 
+            LifetimeSaveSetembro[0].lifetime =0
+        }else{
+            if(LifetimeSaveSetembro[0].lifetime < 1444) LifetimeSaveSetembro[0].lifetime= 1;
+            LifetimeSaveSetembro[0].lifetime = (LifetimeSaveSetembro[0].lifetime/1440)
+        }
+
+        const LifetimeSaveOutubro=  await this.user.query(`
+        SELECT SUM(lifetime_saved_daily) as lifetime
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-10-01' AND 
+        '2021-10-29'
+        `,[id])
+
+        if(LifetimeSaveOutubro[0].lifetime == null){ 
+            LifetimeSaveOutubro[0].lifetime =0
+        }else{
+            if(LifetimeSaveOutubro[0].lifetime < 1444) LifetimeSaveOutubro[0].lifetime= 1;
+            LifetimeSaveOutubro[0].lifetime = (LifetimeSaveOutubro[0].lifetime/1440)
+        }
+
+        // tempo de vida perdido
+
+        const LifeTimeLostAgosto = await this.user.query(`
+        SELECT SUM(lost_life_time) as timeLost
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-08-01' AND 
+        '2021-08-31'
+        `,[id])
+
+        if(LifeTimeLostAgosto[0].timelost == null){ 
+            LifeTimeLostAgosto[0].timelost =0
+        }else{
+            if(LifeTimeLostAgosto [0].timelost < 1444) LifeTimeLostAgosto[0].timelost= 1;
+            LifeTimeLostAgosto[0].timelost = (LifeTimeLostAgosto [0].timelost/1440)
+        }
+        
+        
+        const LifeTimeLostSetembro =  await this.user.query(`
+        SELECT SUM(lost_life_time) as timeLost
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-09-01' AND 
+        '2021-09-30'
+        `,[id])
+        
+        if(LifeTimeLostSetembro[0].timelost == null){ 
+            LifeTimeLostSetembro[0].timelost =0
+        }else{
+            if(LifeTimeLostSetembro [0].timelost < 1444) LifeTimeLostSetembro[0].timelost= 1;
+            LifeTimeLostSetembro[0].timelost = (LifeTimeLostSetembro[0].timelost/1440)
+        }
+
+        const LifetimeLostOutubro =  await this.user.query(`
+        SELECT SUM(lost_life_time) as timeLost
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-10-01' AND 
+        '2021-10-29'
+        `,[id])
+
+        if(LifetimeLostOutubro[0].timelost == null){ 
+            LifetimeLostOutubro[0].timelost =0
+        }else{
+            if(LifetimeLostOutubro[0].timelost < 1444) LifetimeLostOutubro[0].timelost= 1;
+            LifetimeLostOutubro[0].timelost = (LifetimeLostOutubro[0].timelost/1440)
+        } 
+        // dinheiro economizado
+        const MoneySaveAgosto = await this.user.query(`
+        SELECT SUM(money_saved_daily) as saveMoney
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-08-01' AND 
+        '2021-08-31'
+        `,[id])
+
+          if(MoneySaveAgosto[0].savemoney == null){
+            MoneySaveAgosto[0].savemoney= 0
+          }
+        
+        
+        const MoneySaveSetembro = await await this.user.query(`
+        SELECT SUM(money_saved_daily) as saveMoney
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-09-01' AND 
+        '2021-09-30'
+        `,[id])
+
+        if(MoneySaveSetembro[0].savemoney == null){
+            MoneySaveSetembro[0].savemoney =0;
+          }
+
+        const MoneySaveOutubro =  await this.user.query(`
+        SELECT SUM(money_saved_daily) as saveMoney
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-10-01' AND 
+        '2021-10-29'
+        `,[id])
+
+        if(MoneySaveOutubro[0].savemoney == null){
+            MoneySaveOutubro[0].savemoney = 0
+        }
+
+       // dinheiro perdido
+        const MoneyLostAgosto = await this.user.query(`
+        SELECT SUM(daily_lost_money) as lostMoney
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-08-01' AND 
+        '2021-08-31'
+        `,[id])
+        
+        if(MoneyLostAgosto[0].lostmoney == null){
+            MoneyLostAgosto[0].savemoney = 0
+        }
+        
+        
+        const MoneyLostSetembro = await await this.user.query(`
+        SELECT SUM(daily_lost_money) as lostMoney
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-09-01' AND 
+        '2021-09-30'
+        `,[id])
+        if(MoneyLostSetembro[0].lostmoney == null){
+            MoneyLostSetembro[0].lostmoney = 0
+        }
+
+        const MoneyLostOutubro = await await this.user.query(`
+        SELECT SUM(daily_lost_money) as lostMoney
+        FROM "dailyRegister" WHERE "userId" = $1 AND data BETWEEN '2021-10-01' AND 
+        '2021-10-29'
+        `,[id])
+        if(MoneyLostOutubro[0].lostmoney == null){
+            MoneyLostOutubro[0].lostmoney = 0
+        }
+
+        const data = {
+            LifetimeSave :[LifetimeSaveAgosto[0].lifetime,LifetimeSaveSetembro.lifetime,LifetimeSaveOutubro[0].lifetime],
+            lifetimeLost:[LifeTimeLostAgosto[0].timelost,LifeTimeLostSetembro[0].timelost,LifetimeLostOutubro[0].timelost],
+            moneySave:[MoneySaveAgosto[0].savemoney,MoneySaveSetembro[0].savemoney,MoneySaveOutubro[0].savemoney],
+            moneyLost:[MoneyLostAgosto[0].lostmoney,MoneyLostAgosto[0].lostmoney,MoneyLostOutubro[0].lostmoney]
+        }
+
+        return data;
+        
+    }
 }

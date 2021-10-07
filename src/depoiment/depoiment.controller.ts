@@ -47,7 +47,7 @@ export class DepoimentController {
     async updateDepoiment(@Param('id') id: string, @Body() body: DepoimentUpdateDto){
         return await this.depoiment.updateDepoiment(id, body);
     }
-
+    
     //@UseGuards(JwtAuthGuard)
     @Delete('/depoiment/:id')
     @ApiOperation({ summary: "Deleta depoimento" })

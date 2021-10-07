@@ -90,4 +90,12 @@ export class UserController {
     async getEvolutionData(@Param('id') id: string){
         return await this.userService.evolutionData(id)
     }
+
+    @ApiBearerAuth()
+    /* @UseGuards(JwtAuthGuard) */
+    @Get('/getDataStatics/:id')  
+    @ApiOperation({ summary: "pega as estatísticas"})
+    async getDataStatics(@Param('id') id: string){
+        return await this.userService.getDataStatics(id)
+    }
 }

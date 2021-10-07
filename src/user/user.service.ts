@@ -15,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { DailyRegister } from './entity/registro.daily.entity';
 import { UserEntity } from './entity/user.entity';
 import { NotAcceptableException } from '@nestjs/common';
+import { of } from 'rxjs';
 
 
 @Injectable()
@@ -175,9 +176,19 @@ export class UserService {
     }
     
     async getTrophys(id:string){
-        let user_found = await this.findOne(id);
+        let idTrophys=[];
+         /* let user_found = await this.findOne(id);
         return await this.user.createQueryBuilder().
-        relation(UserEntity,"trophy").of(id).loadMany();
+        relation(UserEntity,"trophy").of(id).loadMany();  */
+        const t = await this.user.query(`
+        SELECT *
+        FROM trophy where id in(SELECT "trophyId"
+          FROM user_trophy_trophy
+          WHERE  "userId" = $1)`,[id]
+        )
+
+        return t;
+        
     }
 
     formartDate(){

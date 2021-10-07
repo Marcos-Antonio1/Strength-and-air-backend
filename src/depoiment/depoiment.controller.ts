@@ -13,42 +13,42 @@ export class DepoimentController {
 
     constructor(private readonly depoiment: DepoimentService){}
     
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('/depoiments')
     @ApiOperation({ summary: "Recupera todos os depoimentos" })
     async getDepoiments(){
         return await this.depoiment.getDepoiments();
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('/depoiments/:id')
     @ApiOperation({ summary: "Recupera todos os depoimentos por usuário" })
     async getDepoimentsByUser(@Param('id') id: string){
         return await this.depoiment.getDepoimentsByUser(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Get('/depoiment/:id')
     @ApiOperation({ summary: "Recupera depoimento por ID" })
     async getDepoimentByID(@Param('id') id: string){
         return await this.depoiment.getDepoimentByID(id);
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Post('/depoiment/:id')
     @ApiOperation({ summary: "Cadastra depoimento" })
     async createDepoiment(@Param('id') id: string, @Body() body: DepoimentCreateDto){
         return await this.depoiment.createDepoiment(id, body);
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Put('/depoiment/:id')
     @ApiOperation({ summary: "Atualiza depoimento" })
     async updateDepoiment(@Param('id') id: string, @Body() body: DepoimentUpdateDto){
         return await this.depoiment.updateDepoiment(id, body);
     }
 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     @Delete('/depoiment/:id')
     @ApiOperation({ summary: "Deleta depoimento" })
     async deleteDepoiment(@Param('id') id: string){

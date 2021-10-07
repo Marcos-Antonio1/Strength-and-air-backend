@@ -77,7 +77,7 @@ export class UserController {
 
     @ApiBearerAuth()
     /* @UseGuards(JwtAuthGuard) */
-    @Get('/trophys/:id')
+    @Get('/trophys/:id')    
     @ApiOperation({ summary: "Resgasta todos os troféus do usuário"})
     async Mytrophy(@Param('id') id: string){
         return await this.userService.getTrophys(id);

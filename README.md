@@ -4,7 +4,7 @@
 
 <p align="center">
 
-Força e ar é uma plataforma que auxiliar as pessoas a deixarem o vício de nicotina,tendo em vista esse objetivos são utilizados técnicas de gamificação para deixar o processo mais agradável e motivador para o usuário. Ressalntando que o app proposto é uma forma complementar aos tratamentos convencionais.
+Força e ar é uma plataforma que auxiliar as pessoas a deixarem o vício de nicotina,tendo em vista esse objetivos são utilizados técnicas de gamificação para deixar o processo mais agradável e motivador para o usuário. Ressaltando que o app proposto é uma forma complementar aos tratamentos convencionais.
 
 # Tecnologias utilizadas  
   

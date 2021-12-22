@@ -1,73 +1,49 @@
+<p align ="center">
+    <h1> Força e Ar </h1>
+</p>
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+
+Força e ar é uma plataforma que auxiliar as pessoas a deixarem o vício de nicotina,tendo em vista esse objetivos são utilizados técnicas de gamificação para deixar o processo mais agradável e motivador para o usuário. Ressalntando que o app proposto é uma forma complementar aos tratamentos convencionais.
+
+# Tecnologias utilizadas  
+  
+  - JavaScript
+  - TypeScript
+  - Nestjs
+  - Postgres
+  - React native
+  - Expo 
+  - Postgres
+ 
+# Funcionalidades 
+- [:heavy_check_mark:] Crud Usuário
+- [:heavy_check_mark:] Implementação de depoimentos
+- [:heavy_check_mark:] Criação dos desafios
+- [:heavy_check_mark:] Criação da sala de troféus
+- [:heavy_check_mark:] Estatisticas do usuário
+- [:heavy_check_mark:] Cadastro dos dados diários
+- [:heavy_check_mark:] Edição de dados do usuário
+- [:heavy_check_mark:] Teste do nível de dependência
+- [:heavy_check_mark:] Relatório da evolução 
+- [:heavy_check_mark:] Autenticação e autorização
+ 
+# Preview Telas
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/33884828/147104284-2b64bb0f-2289-4ea7-9553-b5e6a85fba7f.png" width="350" >
+   <img src="https://user-images.githubusercontent.com/33884828/147104420-bfc66a0e-15f8-4024-a6ec-30246fb647d1.png" width="350" title="hover text">
+  
+</p>
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/33884828/147103956-61f6646c-1a6b-4987-9d72-8765a69eaa63.png" width="350">  
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+# Status do projeto 
+- [:heavy_check_mark:] Concluído :rocket:
+# Instalação
+- Baixar as depenência do backend (yarn)
+- Configurar as credenciais do banco no backend
+- Baixar o frontEnd APP [frontend](https://github.com/ArthurAlaete/strength-and-air-mobile)
+- Configurar o ip das requisições axios no front end
+- Baixar as dependências do fronEnd (yarn)
+- Subir o frontEnd e backEnd(yarn start) e testar.
